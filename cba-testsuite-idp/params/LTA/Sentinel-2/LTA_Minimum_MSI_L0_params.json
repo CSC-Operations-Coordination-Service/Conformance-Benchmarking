@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"contains(Name,'_MSI_L0_')",
+	"OrderPriority":14
+}
+]

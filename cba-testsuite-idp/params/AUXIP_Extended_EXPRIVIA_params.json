@@ -1,0 +1,16 @@
+[{
+	"ProductTypeCode":"contains(Name,'_AUX_') or contains(Name,'_AX_')",
+	"PropertyAsc":"PublicationDate",
+	"PropertyDesc":"PublicationDate",
+	"top":"10",
+	"skip":"10",
+	"FilterParam": "contains(Name,'_AUX_')",
+	"NotificationEndpoint":"https://yourmockid.mock.pstmn.io/notification",
+	"NotificationEpUsername":"myserviceuser",
+	"NotificationEpPassword":"yourpassword",
+	"ServerLogsUrl":"https://api.getpostman.com/mocks/yourmockid/call-logs?include=request.body",
+	"api_key":"yourapikey",
+	"subscription_auth_token":"yourtoken",
+	"ProductionOrderPriority":50
+}
+]

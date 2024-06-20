@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"startswith(Name,'S2A_OPER_MSI_L0_') or startswith(Name,'S2B_OPER_MSI_L0_')",
+	"OrderPriority":14
+}
+]

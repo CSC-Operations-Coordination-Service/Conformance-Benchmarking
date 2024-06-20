@@ -1,0 +1,1251 @@
+# logging:
+#   version: 1
+#   handlers:
+#     file_handler:
+#       class: logging.FileHandler
+#       filename: /var/log/cba.log
+#       level: INFO
+#   disable_existing_loggers: true
+global:
+  result_basepath: /tmp/
+  result_filename: cba_testSuiteResults.json
+queries:
+  last_month_S1_L0: &last_month_S1_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S1') and
+    ContentDate/Start ge {{NOW-1M}}
+  last_month_S3_L0: &last_month_S3_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S3') and
+    ContentDate/Start ge {{NOW-1M}}
+  last_month_aux: &last_month_aux >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=(startswith(Name,'S1__AUX_WND_') or
+    startswith(Name,'S1__AUX_ICE_') or
+    startswith(Name,'S2A_OPER_AUX_') or
+    startswith(Name,'S2B_OPER_AUX_') or
+    startswith(Name,'S3A_MW_1_NIR_AX') or
+    startswith(Name,'S3B_MW_1_NIR_AX')) and
+    ContentDate/Start ge {{NOW-1M}}
+  last_month_cadip_session_S1A: &last_month_cadip_session_S1A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=Satellite eq 'S1A' and
+    PublicationDate ge {{NOW-1M}}
+  last_month_cadip_file_S1A: &last_month_cadip_file_S1A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=contains(Name,'S1A') and
+    PublicationDate ge {{NOW-1M}}
+  last_month_cadip_session_S2A: &last_month_cadip_session_S2A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=Satellite eq 'S2A' and
+    PublicationDate ge {{NOW-1M}}
+  last_month_cadip_file_S2A: &last_month_cadip_file_S2A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=contains(Name,'S2A') and
+    PublicationDate ge {{NOW-1M}}
+  last_week: &last_week >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=(startswith(Name,'S1') or
+    startswith(Name,'S2') or
+    startswith(Name,'S3')) and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_S1_L0: &last_week_S1_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S1') and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_S2_L0: &last_week_S2_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S2') and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_S1A_L0: &last_week_S1A_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=(startswith(Name,'S1A_EW_RAW__0SDH') or
+    startswith(Name,'S1A_IW_RAW__0SSH')) and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_S1B_L0: &last_week_S1B_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=(startswith(Name,'S1B_EW_RAW__0SDH') or
+    startswith(Name,'S1B_IW_RAW__0SSH')) and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_S2A_L0: &last_week_S2A_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S2A_OPER_MSI_L0_') and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_S2B_L0: &last_week_S2B_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S2B_OPER_MSI_L0_') and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_S3_L0: &last_week_S3_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S3') and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_S3A_L0: &last_week_S3A_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S3A_SR_0_SRA___') and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_S3B_L0: &last_week_S3B_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S3B_SR_0_SRA___') and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_aux: &last_week_aux >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=(startswith(Name,'S1__AUX_WND_') or
+    startswith(Name,'S1__AUX_ICE_') or
+    startswith(Name,'S2A_OPER_AUX_') or
+    startswith(Name,'S2B_OPER_AUX_') or
+    startswith(Name,'S3A_MW_1_NIR_AX') or
+    startswith(Name,'S3B_MW_1_NIR_AX')) and
+    ContentDate/Start ge {{NOW-7D}}
+  last_week_cadip_session_S1A: &last_week_cadip_session_S1A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=Satellite eq 'S1A' and
+    PublicationDate ge {{NOW-7D}}
+  last_week_cadip_file_S1A: &last_week_cadip_file_S1A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=contains(Name,'S1A') and
+    PublicationDate ge {{NOW-7D}}
+  last_week_cadip_session_S2A: &last_week_cadip_session_S2A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=Satellite eq 'S2A' and
+    PublicationDate ge {{NOW-7D}}
+  last_week_cadip_file_S2A: &last_week_cadip_file_S2A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=contains(Name,'S2A') and
+    PublicationDate ge {{NOW-7D}}
+  last_day: &last_day >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=(startswith(Name,'S1') or
+    startswith(Name,'S2') or
+    startswith(Name,'S3')) and
+    ContentDate/Start ge {{NOW-1D}}
+  last_day_S2_L0: &last_day_S2_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S2') and
+    ContentDate/Start ge {{NOW-1D}}
+  last_day_S2A_L2A: &last_day_S2A_L2A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S2A_OPER_MSI_L2A_TL') and
+    ContentDate/Start ge {{NOW-1D}}
+  last_day_S2B_L2A: &last_day_S2B_L2A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=startswith(Name,'S2B_OPER_MSI_L2A_TL') and
+    ContentDate/Start ge {{NOW-1D}}
+  last_day_cadip_S1A: &last_day_cadip_S1A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=100&$filter=Satellite eq 'S1A' and
+    PublicationDate ge {{NOW-1D}}
+  top_30_online: &top_30_online >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=(startswith(Name,'S1A_EW_RAW__0SDH') or
+    startswith(Name,'S1A_IW_RAW__0SSH') or
+    startswith(Name,'S3A_SR_0_SRA___') or
+    startswith(Name,'S3B_SR_0_SRA___')) and
+    (Online eq true)
+  top_30_no_removed: &top_30_no_removed >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=(startswith(Name,'S1A_EW_RAW__0SDH') or
+    startswith(Name,'S1A_IW_RAW__0SSH') or
+    startswith(Name,'S3A_SR_0_SRA___') or
+    startswith(Name,'S3B_SR_0_SRA___')) and
+    (EvictionDate gt {{NOW+0D}}) and
+    (Online eq true)
+  top_30_online_S1A_L0: &top_30_online_S1A_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=(startswith(Name,'S1A_EW_RAW__0SDH') or
+    startswith(Name,'S1A_IW_RAW__0SSH')) and
+    (Online eq true)
+  top_30_online_S2_L0: &top_30_online_S2_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=(startswith(Name,'S2A_OPER_MSI_L0_') or
+    startswith(Name,'S2B_OPER_MSI_L0_')) and
+    (Online eq true)
+  top_30_online_S3_L0: &top_30_online_S3_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=(startswith(Name,'S3A_SR_0_SRA___') or
+    startswith(Name,'S3B_SR_0_SRA___')) and
+    (Online eq true)
+  top_30_S1A_L0: &top_30_S1A_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=(startswith(Name,'S1A_EW_RAW__0SDH') or
+    startswith(Name,'S1A_IW_RAW__0SSH')) and (endswith(Name,'.zip') or endswith(Name,'.tar')) and
+    ContentDate/Start ge {{NOW-7D}}
+  top_30_S1B_L0: &top_30_S1B_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=(startswith(Name,'S1B_EW_RAW__0SDH') or
+    startswith(Name,'S1B_IW_RAW__0SSH')) and ContentDate/Start ge {{NOW-1M}}
+  top_30_S2A_L0: &top_30_S2A_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=startswith(Name,'S2A_OPER_MSI_L2A_TL') and
+    (endswith(Name,'.zip') or endswith(Name,'.tar')) and
+    ContentDate/Start ge {{NOW-7D}}
+  top_30_S2B_L0: &top_30_S2B_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=startswith(Name,'S2B_OPER_MSI_L2A_TL') and
+    (endswith(Name,'.zip') or endswith(Name,'.tar')) and
+    ContentDate/Start ge {{NOW-7D}}
+  top_30_S3A_L0: &top_30_S3A_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=startswith(Name,'S3A_SR_0_SRA___') and
+    (endswith(Name,'.zip') or endswith(Name,'.tar')) and
+    ContentDate/Start ge {{NOW-7D}}
+  top_30_S3B_L0: &top_30_S3B_L0 >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=startswith(Name,'S3B_SR_0_SRA___') and
+    (endswith(Name,'.zip') or endswith(Name,'.tar')) and
+    ContentDate/Start ge {{NOW-7D}}
+  top_30_aux: &top_30_aux >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=(startswith(Name,'S1__AUX_WND_') or
+    startswith(Name,'S1__AUX_ICE_') or
+    startswith(Name,'S2B_OPER_AUX_SAD') or
+    startswith(Name,'S2A_OPER_AUX_SAD') or
+    startswith(Name,'S3A_MW_1_NIR_AX') or
+    startswith(Name,'S3B_MW_1_NIR_AX')) and
+    ContentDate/Start ge {{NOW-1M}}
+  top_30_cadip_file_S1A: &top_30_cadip_file_S1A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=contains(Name,'S1A') and
+    PublicationDate ge {{NOW-1M}}
+  top_30_cadip_file_S2A: &top_30_cadip_file_S2A >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&$top=30&$filter=contains(Name,'S2A') and
+    PublicationDate ge {{NOW-1M}}
+  random_s1_l0_type: &random_s1_l0_type
+    $filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{{ PRODUCT S1 L0 }}')
+  random_s2_l0_type: &random_s2_l0_type
+    $filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{{ PRODUCT S2 L0 }}')
+  random_s3_l0_type: &random_s3_l0_type
+    $filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{{ PRODUCT S3 L0 }}')
+  random_aux_l0_type: &random_aux_l0_type
+    $filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{{ PRODUCT AUX }}')
+  random_ue_geo: &random_ue_geo
+    $filter=OData.CSC.Intersects(area=geography'SRID=4326;{{GEO RANDOM}}')
+  ping: &ping
+    $top=1
+platforms:
+  LTA_ACRI_BASIC: &LTA_ACRI_BASIC
+    key: LTA_ACRI
+    label: 'LTA Acri'
+    root_uri: 'https://lta.acri.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+  LTA_ACRI_OAUTH: &LTA_ACRI_OAUTH
+    key: LTA_ACRI
+    label: 'LTA Acri'
+    root_uri: 'https://lta.acri.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: lta-user-public
+        client_secret:
+        username: yourusername
+        password: yourpassword
+        token_url: https://sso.aip.acri-st.fr/auth/realms/lta/protocol/openid-connect/token
+        grant_type: password
+        scope: profile email
+  LTA_CLOUDFERRO_OAUTH: &LTA_CLOUDFERRO_OAUTH
+    key: LTA_CLOUDFERRO
+    label: 'LTA Cloudferro'
+    root_uri: 'https://catalogue.lta.cloudferro.com/odata/v1/'
+    num_workers: 5
+    location_trusted: true
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: lta-public
+        client_secret:
+        username: yourusername
+        password: yourpassword
+        token_url: https://identity.cloudferro.com/auth/realms/lta/protocol/openid-connect/token
+        grant_type: password
+        scope: openid
+  LTA_EXPRIVIA_S1_BASIC: &LTA_EXPRIVIA_S1_BASIC
+    key: LTA_EXPRIVIA_S1
+    label: 'LTA Exprivia Sentinel 1'
+    root_uri: 'https://lta.exprivia.copernicus.eu/s1/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_month_S1_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S1_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_online_S1A_L0
+  LTA_EXPRIVIA_S1_OAUTH: &LTA_EXPRIVIA_S1_OAUTH
+    key: LTA_EXPRIVIA_S1
+    label: 'LTA Exprivia Sentinel 1'
+    root_uri: 'https://lta.exprivia.copernicus.eu/s1/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: exp-token
+        client_secret:
+        username: yourusername
+        password: yourpassword
+        token_url: https://lta.exprivia.copernicus.eu/s1/getAuthToken
+        grant_type: password
+        scope: profile email
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_month_S1_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S1_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_online_S1A_L0
+  LTA_EXPRIVIA_S2_BASIC: &LTA_EXPRIVIA_S2_BASIC
+    key: LTA_EXPRIVIA_S2
+    label: 'LTA Exprivia Sentinel 2'
+    root_uri: 'https://lta.exprivia.copernicus.eu/s2/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_day_S2_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S2_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_online_S2_L0
+  LTA_EXPRIVIA_S2_OAUTH: &LTA_EXPRIVIA_S2_OAUTH
+    key: LTA_EXPRIVIA_S2
+    label: 'LTA Exprivia Sentinel 2'
+    root_uri: 'https://lta.exprivia.copernicus.eu/s2/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: exp-token
+        client_secret:
+        username: yourusername
+        password: yourpassword
+        token_url: https://lta.exprivia.copernicus.eu/s2/getAuthToken
+        grant_type: password
+        scope: profile email
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_day_S2_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S2_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_online_S2_L0
+  LTA_EXPRIVIA_S3_BASIC: &LTA_EXPRIVIA_S3_BASIC
+    key: LTA_EXPRIVIA_S3
+    label: 'LTA Exprivia Sentinel 3'
+    root_uri: 'https://lta.exprivia.copernicus.eu/s3/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_month_S3_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S3_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_online_S3_L0
+  LTA_EXPRIVIA_S3_OAUTH: &LTA_EXPRIVIA_S3_OAUTH
+    key: LTA_EXPRIVIA_S3
+    label: 'LTA Exprivia Sentinel 3'
+    root_uri: 'https://lta.exprivia.copernicus.eu/s3/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: exp-token
+        client_secret:
+        username: yourusername
+        password: yourpassword
+        token_url: https://lta.exprivia.copernicus.eu/s3/getAuthToken
+        grant_type: password
+        scope: profile email
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_month_S3_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S3_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_online_S3_L0
+  LTA_WERUM_BASIC: &LTA_WERUM_BASIC
+    key: LTA_WERUM
+    label: 'LTA Werum'
+    root_uri: 'https://lta.werum.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    location_trusted: true
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+    scenarios:
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_no_removed
+  LTA_WERUM_OAUTH: &LTA_WERUM_OAUTH
+    key: LTA_WERUM
+    label: 'LTA Werum'
+    root_uri: 'https://lta.werum.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    location_trusted: true
+    auth:
+      type: oauth
+      credentials:
+        client_id:
+        client_secret:
+        username: yourusername
+        password: yourpassword
+        token_url: https://lta.werum.copernicus.eu/oauth/accessToken
+        grant_type: password
+        scope: profile email
+    scenarios:
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_no_removed
+  PRIP_ACRI_S3A_OAUTH: &PRIP_ACRI_S3A_OAUTH
+    key: PRIP_ACRI_S3A
+    label: PRIP Acri Sentinel-3A
+    root_uri: 'https://S3A.prip.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: s3ps-user-public
+        client_secret:
+        # encoded_credential: ****
+        username: yourusername
+        password: yourpassword
+        token_url: https://S3A.prip.copernicus.eu/auth/realms/S3PS/protocol/openid-connect/token
+        grant_type: password
+        scope: openid
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_week_S3A_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S3A_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S3A_L0
+  PRIP_ATOS_S2A_OAUTH: &PRIP_ATOS_S2A_OAUTH
+    key: PRIP_ATOS_S2A_OAUTH
+    label: PRIP Atos Sentinel-2A
+    root_uri: 'https://prip.s2a.atos.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: FzZkBEXv9LBey7Fr1FMwvUXTqUka
+        client_secret: yourclientsecret
+        username: yourusername
+        password: yourpassword
+        token_url: https://prip.s2a.atos.copernicus.eu/token
+        grant_type: password
+        scope: openid
+        token_requires_scope: true
+        # encoded_credential: ****
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_day_S2A_L2A
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S2A_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S2A_L0
+  PRIP_CAPGEMINI_S2B_BASIC: &PRIP_CAPGEMINI_S2B_BASIC
+    key: PRIP_CAPGEMINI_S2B
+    label: PRIP Capgemini Sentinel-2B
+    root_uri: 'https://prip.s2b.capg.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_day_S2B_L2A
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S2B_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S2B_L0
+  PRIP_CAPGEMINI_S2B_OAUTH: &PRIP_CAPGEMINI_S2B_OAUTH
+    key: PRIP_CAPGEMINI_S2B
+    label: PRIP Capgemini Sentinel-2B
+    root_uri: 'https://prip.s2b.capg.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: prip-api
+        client_secret:
+        # encoded_credential: ****
+        username: yourusername
+        password: yourpassword
+        token_url: https://prip.s2b.capg.copernicus.eu/oauth/token
+        grant_type: password
+        scope: openid
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_day_S2B_L2A
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S2B_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S2B_L0
+  PRIP_DLR_S1B_BASIC: &PRIP_DLR_S1B_BASIC
+    key: PRIP_DLR_S1B
+    label: PRIP DLR Sentinel-1B
+    root_uri: 'https://prip.s1b.dlr.copernicus.eu/proseo/prip/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_week_S1B_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S1B_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S1B_L0
+  PRIP_DLR_S1B_OAUTH: &PRIP_DLR_S1B_OAUTH
+    key: PRIP_DLR_S1B
+    label: PRIP DLR Sentinel-1B
+    root_uri: 'https://prip.s1b.dlr.copernicus.eu/proseo/prip/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: "S1B\\S1B_LTA_CoordDesk"
+        client_secret: yourclientsecret
+        # encoded_credential: ****
+        username: yourusername
+        password: yourpassword
+        token_url: https://prip.s1b.dlr.copernicus.eu/proseo/prip/v1/token
+        grant_type: client_credentials
+        scope: openid
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_week_S1B_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S1B_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S1B_L0
+  PRIP_SERCO_S1A_BASIC: &PRIP_SERCO_S1A_BASIC
+    key: PRIP_SERCO_S1A
+    label: PRIP SERCO Sentinel-1A
+    root_uri: 'https://s1a.prip.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_week_S1A_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S1A_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S1A_L0
+  PRIP_SERCO_S1A_OAUTH: &PRIP_SERCO_S1A_OAUTH
+    key: PRIP_SERCO_S1A
+    label: PRIP Serco Sentinel-1A
+    root_uri: 'https://s1a.prip.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: prip_s1a-catalogue
+        client_secret:
+        # encoded_credential: ****
+        username: yourusername
+        password: yourpassword
+        token_url: https://s1a.prip.copernicus.eu/auth/realms/prip_s1a/protocol/openid-connect/token
+        grant_type: password
+        scope:
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_week_S1A_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S1A_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S1A_L0
+  PRIP_SERCO_S3B_BASIC: &PRIP_SERCO_S3B_BASIC
+    key: PRIP_SERCO_S3B
+    label: PRIP Serco Sentinel-3B
+    root_uri: 'https://s3b.prip.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_week_S3B_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S3B_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S3B_L0
+  PRIP_SERCO_S3B_OAUTH: &PRIP_SERCO_S3B_OAUTH
+    key: PRIP_SERCO_S3B
+    label: PRIP Serco Sentinel-3B
+    root_uri: 'https://s3b.prip.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: prip_s3b-catalogue
+        client_secret:
+        username: yourusername
+        password: yourpassword
+        token_url: https://s3b.prip.copernicus.eu/auth/realms/prip_s3b/protocol/openid-connect/token
+        grant_type: password
+        scope:
+        # encoded_credential: ****
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_week_S3B_L0
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_S3B_L0
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_S3B_L0
+  AUXIP_EXPRIVIA_BASIC: &AUXIP_EXPRIVIA_BASIC
+    key: AUXIP_EXPRIVIA
+    label: AUXIP Exprivia
+    root_uri: 'https://adgs.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: yourusername
+        password: yourpassword
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_month_aux
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_aux
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_aux
+  AUXIP_EXPRIVIA_OAUTH: &AUXIP_EXPRIVIA_OAUTH
+    key: AUXIP_EXPRIVIA
+    label: AUXIP Exprivia
+    root_uri: 'https://adgs.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: adgs-client
+        client_secret: yourclientsecret
+        username: yourusername
+        password: yourpassword
+        token_url: https://adgs.copernicus.eu/getAuthToken
+        grant_type: password
+        scope: openid
+        # encoded_credential: ****
+    scenarios:
+      TS01:
+        cases:
+          TestCase001:
+            ## DATE QUERY EXAMPLE
+            query: *last_month_aux
+      TS02:
+        cases:
+          TestCase001:
+            query: *last_week_aux
+      TS03:
+        cases:
+          TestCase001:
+            query: *top_30_aux
+  CADIP_DLR_OAUTH: &CADIP_DLR_OAUTH
+    key: CADIP_DLR
+    label: CADIP DLR
+    root_uri: 'https://eg37235.psmanaged.com/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    location_trusted: true
+    auth:
+      type: oauth
+      credentials:
+        client_id: copas-d5d221f9
+        client_secret: yourclientsecret
+        username: yourusername
+        password: yourpassword
+        token_url: https://eg37235.psmanaged.com/keycloak/realms/copas/protocol/openid-connect/token
+        grant_type: password
+        scope: email openid profile
+        token_requires_scope: true
+        # encoded_credential: ****
+  CADIP_EGEOS_OAUTH: &CADIP_EGEOS_OAUTH
+    key: CADIP_EGEOS
+    label: CADIP EGEOS
+    root_uri: 'https://api-cadip.e-geos.earth/cadip/1.0/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    location_trusted: true
+    auth:
+      type: oauth
+      credentials:
+        client_id: cadip_client
+        client_secret: yourclientsecret
+        username: yourusername
+        password: yourpassword
+        token_url: https://iam-cadip.e-geos.earth/realms/cadip/protocol/openid-connect/token
+        grant_type: password
+        scope: openid
+        token_requires_scope: true
+        #encoded_credential: ****
+  CADIP_INTA_OAUTH: &CADIP_INTA_OAUTH
+    key: CADIP_INTA
+    label: CADIP INTA
+    root_uri: 'https://inta-ddp.inta.es:8443/cadip-interface/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    location_trusted: true
+    auth:
+      type: oauth
+      credentials:
+        client_id: cadip-client
+        client_secret: yourclientsecret
+        username: yourusername
+        password: yourpassword
+        token_url: https://inta-ddp.inta.es:8443/cadip-oauth/oauth/token
+        grant_type: password
+        scope: read
+        token_requires_scope: true
+        #encoded_credential: ****
+  CADIP_KSAT_OAUTH: &CADIP_KSAT_OAUTH
+    key: CADIP_KSAT
+    label: CADIP KSAT
+    root_uri: 'https://cadip-api.victoriousglacier-1f7d60fd.westeurope.azurecontainerapps.io/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    location_trusted: true
+    auth:
+      type: oauth
+      credentials:
+        client_id: cadip-client
+        client_secret: yourclientsecret
+        username: yourusername
+        password: yourpassword
+        token_url: https://cadip-api.victoriousglacier-1f7d60fd.westeurope.azurecontainerapps.io/oauth2/token
+        grant_type: password
+        scope:
+        # encoded_credential:
+  CADIP_SSC_OAUTH: &CADIP_SSC_OAUTH
+    key: CADIP_SSC
+    label: CADIP SSC
+    root_uri: 'https://ddp2.sscspace.com/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    location_trusted: true
+    auth:
+      type: oauth
+      credentials:
+        client_id: cadip-client
+        client_secret: yourclientsecret
+        username: yourusername
+        password: yourpassword
+        token_url: https://ddp2.sscspace.com/oauth2/token
+        grant_type: password
+        scope: openid
+        token_requires_scope: true
+        # encoded_credential:
+    scenarios:
+      TS06:
+        cases:
+          TestCase701:
+            ## DATE QUERY EXAMPLE
+            query: *last_month_cadip_session_S2A
+      TS07:
+        cases:
+          TestCase701:
+            query: *last_week_cadip_session_S2A
+      TS08:
+        cases:
+          TestCase801:
+            query: *top_30_cadip_file_S2A
+      TS09:
+        cases:
+          TestCase801:
+            ## DATE QUERY EXAMPLE
+            query: *last_month_cadip_file_S2A
+      TS10:
+        cases:
+          TestCase801:
+            query: *last_week_cadip_file_S2A
+services:
+  - LTA
+  - PRIP
+  - AUXIP
+  - CADIP
+scenarios:
+  TS01:
+    key: TS01
+    name: Product Listing Query
+    path: cba.scenarios.test_scenario_01.TestScenario01
+    default_platform: *LTA_EXPRIVIA_S1_BASIC
+    compatible_platforms:
+      - LTA_ACRI_BASIC
+      - LTA_ACRI_OAUTH
+      - LTA_WERUM_BASIC
+      - LTA_WERUM_OAUTH
+      - LTA_CLOUDFERRO_OAUTH
+      - LTA_EXPRIVIA_S1_BASIC
+      - LTA_EXPRIVIA_S1_OAUTH
+      - LTA_EXPRIVIA_S2_BASIC
+      - LTA_EXPRIVIA_S2_OAUTH
+      - LTA_EXPRIVIA_S3_BASIC
+      - LTA_EXPRIVIA_S3_OAUTH
+      - PRIP_ACRI_S3A_OAUTH
+      - PRIP_ATOS_S2A_OAUTH
+      - PRIP_CAPGEMINI_S2B_BASIC
+      - PRIP_CAPGEMINI_S2B_OAUTH
+      - PRIP_DLR_S1B_BASIC
+      - PRIP_DLR_S1B_OAUTH
+      - PRIP_SERCO_S1A_BASIC
+      - PRIP_SERCO_S1A_OAUTH
+      - PRIP_SERCO_S3B_BASIC
+      - PRIP_SERCO_S3B_OAUTH
+      - AUXIP_EXPRIVIA_BASIC
+      - AUXIP_EXPRIVIA_OAUTH
+    services:
+      - LTA
+      - PRIP
+      - AUXIP
+    cases:
+      TestCase001:
+        requests_count: 3 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 120 # In seconds
+        #max_retries: 0
+        #retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *last_day
+  TS02:
+    key: TS02
+    name: Product Details
+    path: cba.scenarios.test_scenario_02.TestScenario02
+    default_platform: *LTA_EXPRIVIA_S1_BASIC
+    compatible_platforms:
+      - LTA_ACRI_BASIC
+      - LTA_ACRI_OAUTH
+      - LTA_WERUM_BASIC
+      - LTA_WERUM_OAUTH
+      - LTA_CLOUDFERRO_OAUTH
+      - LTA_EXPRIVIA_S1_BASIC
+      - LTA_EXPRIVIA_S1_OAUTH
+      - LTA_EXPRIVIA_S2_BASIC
+      - LTA_EXPRIVIA_S2_OAUTH
+      - LTA_EXPRIVIA_S3_BASIC
+      - LTA_EXPRIVIA_S3_OAUTH
+      - PRIP_ACRI_S3A_OAUTH
+      - PRIP_ATOS_S2A_OAUTH
+      - PRIP_CAPGEMINI_S2B_BASIC
+      - PRIP_CAPGEMINI_S2B_OAUTH
+      - PRIP_DLR_S1B_BASIC
+      - PRIP_DLR_S1B_OAUTH
+      - PRIP_SERCO_S1A_BASIC
+      - PRIP_SERCO_S1A_OAUTH
+      - PRIP_SERCO_S3B_BASIC
+      - PRIP_SERCO_S3B_OAUTH
+      - AUXIP_EXPRIVIA_BASIC
+      - AUXIP_EXPRIVIA_OAUTH
+    services:
+      - LTA
+      - PRIP
+      - AUXIP
+    cases:
+      TestCase001:
+        requests_count: 1 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 120 # In seconds
+        max_retries: 5
+        retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *last_week
+      TestCase011:
+        requests_count: 3
+        requests_timeout: 30 # In seconds
+        max_retries: 5
+        retry_delay: 1 # In seconds
+  TS03:
+    key: TS03
+    name: Product Download
+    path: cba.scenarios.test_scenario_03.TestScenario03
+    default_platform: *LTA_EXPRIVIA_S1_BASIC
+    compatible_platforms:
+      - LTA_ACRI_BASIC
+      - LTA_ACRI_OAUTH
+      - LTA_WERUM_BASIC
+      - LTA_WERUM_OAUTH
+      - LTA_CLOUDFERRO_OAUTH
+      - LTA_EXPRIVIA_S1_BASIC
+      - LTA_EXPRIVIA_S1_OAUTH
+      - LTA_EXPRIVIA_S2_BASIC
+      - LTA_EXPRIVIA_S2_OAUTH
+      - LTA_EXPRIVIA_S3_BASIC
+      - LTA_EXPRIVIA_S3_OAUTH
+      - PRIP_ACRI_S3A_OAUTH
+      - PRIP_ATOS_S2A_OAUTH
+      - PRIP_CAPGEMINI_S2B_BASIC
+      - PRIP_CAPGEMINI_S2B_OAUTH
+      - PRIP_DLR_S1B_BASIC
+      - PRIP_DLR_S1B_OAUTH
+      - PRIP_SERCO_S1A_BASIC
+      - PRIP_SERCO_S1A_OAUTH
+      - PRIP_SERCO_S3B_BASIC
+      - PRIP_SERCO_S3B_OAUTH
+      - AUXIP_EXPRIVIA_BASIC
+      - AUXIP_EXPRIVIA_OAUTH
+    services:
+      - LTA
+      - PRIP
+      - AUXIP
+    num_workers: 2
+    cases:
+      TestCase001:
+        requests_count: 1 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 240 # In seconds
+        max_retries: 3
+        retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *top_30_online
+      TestCase021:
+        requests_count: 2 # Number of products to download
+        max_retries: 5
+        retry_delay: 1 # In seconds
+        max_download_size: 2400000000 # 1 GB
+  TS04:
+    key: TS04
+    name: Subscriptions Listing Query
+    path: cba.scenarios.test_scenario_04.TestScenario04
+    default_platform: *PRIP_SERCO_S3B_OAUTH
+    compatible_platforms:
+      - LTA_ACRI_BASIC
+      - LTA_ACRI_OAUTH
+      - LTA_WERUM_BASIC
+      - LTA_WERUM_OAUTH
+      - LTA_CLOUDFERRO_OAUTH
+      - LTA_EXPRIVIA_S1_BASIC
+      - LTA_EXPRIVIA_S1_OAUTH
+      - LTA_EXPRIVIA_S2_BASIC
+      - LTA_EXPRIVIA_S2_OAUTH
+      - LTA_EXPRIVIA_S3_BASIC
+      - LTA_EXPRIVIA_S3_OAUTH
+      - PRIP_ACRI_S3A_OAUTH
+      - PRIP_ATOS_S2A_OAUTH
+      - PRIP_CAPGEMINI_S2B_BASIC
+      - PRIP_CAPGEMINI_S2B_OAUTH
+      - PRIP_DLR_S1B_BASIC
+      - PRIP_DLR_S1B_OAUTH
+      - PRIP_SERCO_S1A_BASIC
+      - PRIP_SERCO_S1A_OAUTH
+      - PRIP_SERCO_S3B_BASIC
+      - PRIP_SERCO_S3B_OAUTH
+      - AUXIP_EXPRIVIA_BASIC
+      - AUXIP_EXPRIVIA_OAUTH
+    services:
+      - LTA
+      - PRIP
+      - AUXIP
+    cases:
+      TestCase601:
+        requests_count: 3 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 120 # In seconds
+        #max_retries: 0
+        #retry_delay: 1 # In seconds
+  TS05:
+    key: TS05
+    name: Endpoint Availability
+    path: cba.scenarios.test_scenario_05.TestScenario05
+    default_platform: *LTA_EXPRIVIA_S1_BASIC
+    compatible_platforms:
+      - LTA_ACRI_BASIC
+      - LTA_ACRI_OAUTH
+      - LTA_WERUM_BASIC
+      - LTA_WERUM_OAUTH
+      - LTA_CLOUDFERRO_OAUTH
+      - LTA_EXPRIVIA_S1_BASIC
+      - LTA_EXPRIVIA_S1_OAUTH
+      - LTA_EXPRIVIA_S2_BASIC
+      - LTA_EXPRIVIA_S2_OAUTH
+      - LTA_EXPRIVIA_S3_BASIC
+      - LTA_EXPRIVIA_S3_OAUTH
+      - PRIP_ACRI_S3A_OAUTH
+      - PRIP_ATOS_S2A_OAUTH
+      - PRIP_CAPGEMINI_S2B_BASIC
+      - PRIP_CAPGEMINI_S2B_OAUTH
+      - PRIP_DLR_S1B_BASIC
+      - PRIP_DLR_S1B_OAUTH
+      - PRIP_SERCO_S1A_BASIC
+      - PRIP_SERCO_S1A_OAUTH
+      - PRIP_SERCO_S3B_BASIC
+      - PRIP_SERCO_S3B_OAUTH
+      - AUXIP_EXPRIVIA_BASIC
+      - AUXIP_EXPRIVIA_OAUTH
+      - CADIP_DLR_OAUTH
+      - CADIP_EGEOS_OAUTH
+      - CADIP_INTA_OAUTH
+      - CADIP_KSAT_OAUTH
+      - CADIP_SSC_OAUTH
+    services:
+      - LTA
+      - PRIP
+      - AUXIP
+      - CADIP
+    cases:
+      TestCase001:
+        requests_count: 1 # Number of requests to average
+        requests_timeout: 60 # In seconds
+        query: *ping
+      TestCase701:
+        requests_count: 1 # Number of requests to average
+        requests_timeout: 60 # In seconds
+        query: *ping
+# CADIP
+  TS06:
+    key: TS06
+    name: Session Listing Query
+    path: cba.scenarios.test_scenario_06.TestScenario06
+    default_platform: *CADIP_DLR_OAUTH
+    compatible_platforms:
+      - CADIP_DLR_OAUTH
+      - CADIP_EGEOS_OAUTH
+      - CADIP_INTA_OAUTH
+      - CADIP_KSAT_OAUTH
+      - CADIP_SSC_OAUTH
+    services:
+      - CADIP
+    cases:
+      TestCase701:
+        requests_count: 3 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 120 # In seconds
+        #max_retries: 0
+        #retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *last_month_cadip_session_S1A
+  TS07:
+    key: TS07
+    name: Session Details
+    path: cba.scenarios.test_scenario_07.TestScenario07
+    default_platform: *CADIP_DLR_OAUTH
+    compatible_platforms:
+      - CADIP_DLR_OAUTH
+      - CADIP_EGEOS_OAUTH
+      - CADIP_INTA_OAUTH
+      - CADIP_KSAT_OAUTH
+      - CADIP_SSC_OAUTH
+    services:
+      - CADIP
+    cases:
+      TestCase701:
+        requests_count: 1 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 120 # In seconds
+        max_retries: 5
+        retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *last_week_cadip_session_S1A
+      TestCase711:
+        requests_count: 3
+        requests_timeout: 30 # In seconds
+        max_retries: 5
+        retry_delay: 1 # In seconds
+  TS08:
+    key: TS08
+    name: File Download
+    path: cba.scenarios.test_scenario_08.TestScenario08
+    default_platform: *CADIP_DLR_OAUTH
+    compatible_platforms:
+      - CADIP_DLR_OAUTH
+      - CADIP_EGEOS_OAUTH
+      - CADIP_INTA_OAUTH
+      - CADIP_KSAT_OAUTH
+      - CADIP_SSC_OAUTH
+    services:
+      - CADIP
+    num_workers: 2
+    cases:
+      TestCase801:
+        requests_count: 1 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 240 # In seconds
+        max_retries: 3
+        retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *top_30_cadip_file_S1A
+      TestCase821:
+        requests_count: 2 # Number of products to download
+        max_retries: 5
+        retry_delay: 1 # In seconds
+        max_download_size: 2400000000 # 1 GB
+  TS09:
+    key: TS09
+    name: File Listing Query
+    path: cba.scenarios.test_scenario_09.TestScenario09
+    default_platform: *CADIP_DLR_OAUTH
+    compatible_platforms:
+      - CADIP_DLR_OAUTH
+      - CADIP_EGEOS_OAUTH
+      - CADIP_INTA_OAUTH
+      - CADIP_KSAT_OAUTH
+      - CADIP_SSC_OAUTH
+    services:
+      - CADIP
+    cases:
+      TestCase801:
+        requests_count: 3 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 120 # In seconds
+        #max_retries: 0
+        #retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *last_month_cadip_file_S1A
+  TS10:
+    key: TS10
+    name: File Details
+    path: cba.scenarios.test_scenario_10.TestScenario10
+    default_platform: *CADIP_DLR_OAUTH
+    compatible_platforms:
+      - CADIP_DLR_OAUTH
+      - CADIP_EGEOS_OAUTH
+      - CADIP_INTA_OAUTH
+      - CADIP_KSAT_OAUTH
+      - CADIP_SSC_OAUTH
+    services:
+      - CADIP
+    cases:
+      TestCase801:
+        requests_count: 1 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 120 # In seconds
+        max_retries: 5
+        retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *last_week_cadip_file_S1A
+      TestCase811:
+        requests_count: 3
+        requests_timeout: 30 # In seconds
+        max_retries: 5
+        retry_delay: 1 # In seconds
+

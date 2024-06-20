@@ -1,0 +1,23 @@
+[{
+	"ProductTypeCode":"contains(Name,'SL_0_SLT___')",
+	"PropertyAsc":"PublicationDate",
+	"PropertyDesc":"PublicationDate",
+	"top":"100",
+	"skip":"100",
+	"OrderPriority":14,
+	"FilterParam":"contains(Name,'SL_0_SLT___')",
+	"StageOrderSearchString":"OData.CSC.Intersects(area=geography'SRID=4326;Polygon((0.8349609375000023 46.98025235521882,9.536132812499998 49.837982453084834,16.3037109375 41.6400783846789,13.754882812500002 38.41055825094608,2.8564453125000058 40.38002840251181,0.8349609375000023 46.98025235521882,0.8349609375000023 46.98025235521882))')",
+	"BulkBatchsizeProducts": 1,
+    "BulkBatchsizeVolume": 1,
+	"OrderByParam":"PublicationDate asc",
+	"BulkOrderbyParam":"SubmissionDate desc",
+	"BatchOrderPriority":15,
+	"NotificationEndpoint":"https://yourmockid.mock.pstmn.io/notification",
+	"NotificationEpUsername":"myserviceuser",
+	"NotificationEpPassword":"yourpassword",
+	"ServerLogsUrl":"https://api.getpostman.com/mocks/yourmockid/call-logs?include=request.body",
+	"api_key":"yourapikey",
+	"SubscriptionPriority":15,
+	"subscription_auth_token":"yourtoken"
+}
+]

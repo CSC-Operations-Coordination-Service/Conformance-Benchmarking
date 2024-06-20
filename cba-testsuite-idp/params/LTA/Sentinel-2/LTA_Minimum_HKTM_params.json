@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"contains(Name,'_HKTM_')",
+	"OrderPriority":14
+}
+]

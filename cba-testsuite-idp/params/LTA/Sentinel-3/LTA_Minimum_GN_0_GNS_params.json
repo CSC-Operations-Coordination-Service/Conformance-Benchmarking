@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"contains(Name,'GN_0_GNS___')",
+	"OrderPriority":14
+}
+]

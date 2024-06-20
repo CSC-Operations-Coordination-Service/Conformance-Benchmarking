@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"contains(Name,'_AUX_') or contains(Name,'_AX_')",
+	"OrderPriority":14
+}
+]

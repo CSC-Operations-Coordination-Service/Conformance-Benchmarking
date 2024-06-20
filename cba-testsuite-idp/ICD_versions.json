@@ -1,0 +1,29 @@
+{
+	"versions": [
+		{
+			"interface": "LTA",
+			"value": "1.9",
+			"date":	"20230406"
+		},
+        {
+			"interface": "PRIP",
+			"value": "1.9",
+			"date":	"20221003"
+		},
+        {
+			"interface": "AUXIP",
+			"value": "1.4",
+			"date":	"20221003"
+		},
+		{
+			"interface": "EDRS",
+			"value": "4.0",
+            "date":	"20210914"
+		},
+		{
+			"interface": "CADIP",
+			"value": "1.2",
+            "date":	"20230420"
+		}
+    ]
+}

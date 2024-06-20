@@ -1,0 +1,17 @@
+[{
+	"ProductTypeCode":"contains(Name,'_RAW_')",
+	"PropertyAsc":"PublicationDate",
+	"PropertyDesc":"PublicationDate",
+	"top":"10",
+	"skip":"10",
+	"FilterParam":"contains(Name,'_RAW_')",
+	"NotificationEndpoint":"https://yourmockid.mock.pstmn.io/notification",
+	"NotificationEpUsername":"myserviceuser",
+	"NotificationEpPassword":"yourpassword",
+	"ServerLogsUrl":"https://api.getpostman.com/mocks/yourmockid/call-logs?include=request.body",
+	"api_key":"yourapikey",
+	"subscription_auth_token":"yourtoken",
+	"ProductionOrderPriority":14,
+	"ProductTypeCodeForWorkflow":"contains(Name,'S2_L1C_L2A')"
+}
+]

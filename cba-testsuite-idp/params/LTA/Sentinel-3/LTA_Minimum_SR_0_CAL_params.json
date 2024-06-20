@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"contains(Name,'SR_0_CAL___')",
+	"OrderPriority":14
+}
+]

@@ -1,0 +1,209 @@
+logging:
+  version: 1
+  handlers:
+    file_handler:
+      class: logging.FileHandler
+      filename: /home/germano/cba.log
+      level: INFO
+  disable_existing_loggers: true
+global:
+  result_basepath: /home/germano/cba/output/
+platforms:
+  LTA_EXPRIVIA_S1: &LTA_EXPRIVIA_S1
+    key: LTA_EXPRIVIA_S1
+    label: 'LTA Exprivia Sentinel 1'
+    root_uri: 'https://lta.exprivia.copernicus.eu/s1/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: coor_desk
+        password: yourpassord
+  LTA_EXPRIVIA_S2: &LTA_EXPRIVIA_S2
+    key: LTA_EXPRIVIA_S2
+    label: 'LTA Exprivia Sentinel 2'
+    root_uri: 'https://lta.exprivia.copernicus.eu/s2/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: coor_desk
+        password: yourpassord
+  LTA_EXPRIVIA_S3: &LTA_EXPRIVIA_S3
+    key: LTA_EXPRIVIA_S3
+    label: 'LTA Exprivia Sentinel 3'
+    root_uri: 'https://lta.exprivia.copernicus.eu/s3/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: basic
+      credentials:
+        username: coor_desk
+        password: yourpassord
+  PRIP_ACRI_S3A: &PRIP_ACRI_S3A
+    key: PRIP_ACRI_S3A
+    label: PRIP ACRI S3A
+    root_uri: 'https://S3A.prip.copernicus.eu/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: s3ps-user-public
+        client_secret:
+        username: test-coordesk-tpz
+        password: yourpassord
+        token_url: https://S3A.prip.copernicus.eu/auth/realms/S3PS/protocol/openid-connect/token
+        grant_type: password
+  PRIP_S3B_SERCO: &PRIP_S3B_SERCO
+    key: PRIP_S3B_SERCO
+    label: PRIP S3B SERCO
+    root_uri: 'https://s3b.prip.copernicus.eu/odata/v1/'
+    num_workers: 5
+    verify_ssl: false
+    auth:
+      type: oauth
+      credentials:
+        client_id: prip_s3b-catalogue
+        client_secret:
+        username: coorddesk
+        password: yourpassord
+        token_url: https://s3b.prip.copernicus.eu/auth/realms/prip_s3b/protocol/openid-connect/token
+        grant_type: password
+services:
+  - LTA
+  - PRIP
+  - AUX
+queries:
+  last_month: &last_month >- # See https://yaml-multiline.info/
+    $orderby=PublicationDate desc&
+    $filter=contains(Name,'_RAW_') or
+    contains(Name,'L0_') or
+    contains(Name,'_0_') or
+    contains(Name,'S2MSI0') or
+    contains(Name,'_HKTM_') or
+    contains(Name,'DO_0_DOP___') or
+    contains(Name,'DO_0_NAV___') or
+    contains(Name,'GN_0_GNS___') or
+    contains(Name,'MW_0_MWR___') or
+    contains(Name,'OL_0_CR0___') or
+    contains(Name,'OL_0_CR1___') or
+    contains(Name,'OL_0_EFR___') or
+    contains(Name,'SL_0_SLT___') or
+    contains(Name,'SR_0_SRA___') or
+    contains(Name,'SR_0_CAL___') or
+    contains(Name,'TM_0_HKM')  or
+    contains(Name,'TM_0_NAT___') or
+    contains(Name,'AUX') or
+    contains(Name,'AX') and
+    ContentDate/Start ge {{NOW-1M}}
+  online: &online >-
+    $orderby=PublicationDate desc&
+    $filter=(Online eq true)
+  random_s2_l1_type: &random_s2_l1_type
+    $filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{{ PRODUCT S2 L1 }}')
+  random_ue_geo: &random_ue_geo
+    $filter=OData.CSC.Intersects(area=geography'SRID=4326;{{GEO RANDOM}}')
+scenarios:
+  TS01:
+    key: TS01
+    name: LTA TEST SCENARIO 01
+    path: cba.scenarios.test_scenario_01.TestScenario01
+    default_platform: *LTA_EXPRIVIA_S1
+    compatible_platforms:
+      - LTA_EXPRIVIA_S1
+      - LTA_EXPRIVIA_S2
+      - LTA_EXPRIVIA_S3
+      - PRIP_S3B_SERCO
+    services:
+      - LTA
+      - PRIP
+    cases:
+      TestCase001:
+        requests_count: 1 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 5 # In seconds
+        #max_retries: 0
+        #retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *last_month
+        ## PRODUCT TYPE QUERY EXAMPLE
+        # query: >-
+        #   $filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{{ PRODUCT S2 L1 }}')
+        ## GEO QUERY EXAMPLE
+        # query: >-
+        #     $filter=OData.CSC.Intersects(area=geography'SRID=4326;{{GEO RANDOM}}')
+  TS02:
+    key: TS02
+    name: LTA TEST SCENARIO 02
+    path: cba.scenarios.test_scenario_02.TestScenario02
+    default_platform: *LTA_EXPRIVIA_S1
+    compatible_platforms:
+      - LTA_EXPRIVIA_S1
+      - LTA_EXPRIVIA_S2
+      - LTA_EXPRIVIA_S3
+      - PRIP_S3B_SERCO
+    services:
+      - LTA
+      - PRIP
+    cases:
+      TestCase001:
+        requests_count: 1 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 30 # In seconds
+        max_retries: 5
+        retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: >-
+          $filter=Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{{ PRODUCT S1 L0 }}')
+
+      TestCase011:
+        requests_count: 10
+        requests_timeout: 30 # In seconds
+        max_retries: 5
+        retry_delay: 1 # In seconds
+  TS03:
+    key: TS03
+    name: LTA TEST SCENARIO 03
+    path: cba.scenarios.test_scenario_03.TestScenario03
+    default_platform: *PRIP_S3B_SERCO
+    compatible_platforms:
+      - LTA_EXPRIVIA_S1
+      - LTA_EXPRIVIA_S2
+      - LTA_EXPRIVIA_S3
+      - PRIP_S3B_SERCO
+    services:
+      - PRIP
+    cases:
+      TestCase001:
+        requests_count: 1 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 30 # In seconds
+        max_retries: 5
+        retry_delay: 1 # In seconds
+        ## DATE QUERY EXAMPLE
+        query: *online
+      TestCase021:
+        requests_count: 2 # Number of products to download
+        max_retries: 5
+        retry_delay: 1 # In seconds
+        max_download_size: 1073741824 # 1 GB
+
+  TS04:
+    key: TS04
+    name: LTA TEST SCENARIO 04
+    path: cba.scenarios.test_scenario_04.TestScenario04
+    default_platform: *PRIP_S3B_SERCO
+    compatible_platforms:
+      - PRIP_S3B_SERCO
+    services:
+      - PRIP
+    cases:
+      TestCase601:
+        requests_count: 1 # Number of requests to average
+        requests_delay: 1 # In seconds
+        requests_timeout: 60 # In seconds
+        #max_retries: 0
+        #retry_delay: 1 # In seconds

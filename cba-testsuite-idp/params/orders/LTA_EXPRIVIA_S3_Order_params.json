@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"startswith(Name,'S3A_SR_0_SRA___') or startswith(Name,'S3B_SR_0_SRA___')",
+	"OrderPriority":14
+}
+]

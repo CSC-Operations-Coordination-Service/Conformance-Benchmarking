@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"startswith(Name,'S1A_EW_RAW__0SDH') or startswith(Name,'S1A_IW_RAW__0SSH')",
+	"OrderPriority":14
+}
+]

@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"contains(Name,'_RAW_')",
+	"OrderPriority":14
+}
+]

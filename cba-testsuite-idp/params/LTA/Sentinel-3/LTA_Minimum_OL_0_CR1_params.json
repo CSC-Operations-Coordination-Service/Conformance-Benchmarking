@@ -1,0 +1,5 @@
+[{
+	"ProductTypeCode":"contains(Name,'OL_0_CR1___')",
+	"OrderPriority":14
+}
+]
